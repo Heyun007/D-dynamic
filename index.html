@@ -671,7 +671,7 @@ $('pushToggle').addEventListener('change',async function(){
     const perm=await Notification.requestPermission()
     if(perm!=='granted'){showToast('请允许通知权限');this.checked=false;return}
     try{
-      const reg=await navigator.serviceWorker.register('sw.js',{scope:'/'})
+      const reg=await navigator.serviceWorker.register('sw.js')
       await navigator.serviceWorker.ready
       const sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array('BMzik6m7nFxbogkxYQ6M3-logfhmiADJrfHsYr2bDWZcVqlWq7Z3tdYhGCdSu2nMVA_Uy8elZcPeyN-S9hmMWs')})
       data.subscription=JSON.stringify(sub);data.pushEnabled=true;saveData();showToast(t('toast_pushed'))
