@@ -682,6 +682,7 @@ $('pushToggle').addEventListener('change',async function(){
   }
 })
 
+function showToast(msg){const c=$('toastContainer');const el=document.createElement('div');el.className='toast';el.textContent=msg;c.appendChild(el);setTimeout(()=>{if(el.parentNode)el.remove()},2500)}
 function init(){
     if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(()=>{})}
   applyBg();
@@ -696,8 +697,7 @@ function init(){
   $('pushBannerClose').addEventListener('click',function(){$('pushBanner').classList.remove('show')});
   document.querySelectorAll('.post-text,.post-author,.comment-item,.profile-name,.setting-item .s-left,.cards-header>span,.category-header .cat-name,.profile-menu-item').forEach(el=>el.style.color=data.fontColor);
   showToast('欢迎回来');
-}
-function urlBase64ToUint8Array(b){const p='='.repeat((4-b.length%4)%4);const raw=atob((b+p).replace(/\-/g,'+').replace(/_/g,'/'));const arr=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);return arr}
+function urlBase64ToUint8Array(b){const p='='.repeat((4-b.length%4)%4);const raw=atob((b+p).replace(/\-/g,'+').replace(/_/g,'/'));const arr=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);return arr}}
 init();
 </script>
 </body>
