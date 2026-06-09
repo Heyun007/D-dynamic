@@ -671,7 +671,7 @@ $('pushToggle').addEventListener('change',async function(){
     const perm=await Notification.requestPermission()
     if(perm!=='granted'){showToast('请允许通知权限');this.checked=false;return}
     try{
-      const reg=await navigator.serviceWorker.register('sw.js')
+      const reg=await navigator.serviceWorker.register('D-dynamic/sw.js')
       await navigator.serviceWorker.ready
       const sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array('BMzik6m7nFxbogkxYQ6M3-logfhmiADJrfHsYr2bDWZcVqlWq7Z3tdYhGCdSu2nMVA_Uy8elZcPeyN-S9hmMWs')})
       data.subscription=JSON.stringify(sub);data.pushEnabled=true;saveData();showToast(t('toast_pushed'))
@@ -684,7 +684,7 @@ $('pushToggle').addEventListener('change',async function(){
 
 function showToast(msg){const c=$('toastContainer');const el=document.createElement('div');el.className='toast';el.textContent=msg;c.appendChild(el);setTimeout(()=>{if(el.parentNode)el.remove()},2500)}
 function init(){
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(()=>{})}
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('D-dynamic/sw.js').catch(()=>{})}
   applyBg();
   document.documentElement.style.setProperty('--text',data.fontColor||'#333333');
   $('blurSlider').value=data.blur||0;
