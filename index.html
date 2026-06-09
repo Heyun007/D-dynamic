@@ -8,7 +8,7 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--text:#333333;--text2:#999999;--border:rgba(200,200,200,0.3);--primary:#4a90d9;--blur:0px}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#e0e0e0;display:flex;justify-content:center;min-height:100vh;margin:0}
-#app{width:375px;min-height:620px;max-height:100vh;background:transparent;position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 20px rgba(0,0,0,.15);font-size:14px}
+#app{width:375px;min-height:480px;max-height:100vh;background:transparent;position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 20px rgba(0,0,0,.15);font-size:14px}
 /* 背景层：cover铺满无空白 */
 #bgOverlay{position:absolute;top:0;left:0;width:100%;height:100%;background-color:#fff;background-size:cover;background-position:center center;background-repeat:no-repeat;filter:blur(var(--blur));z-index:0;pointer-events:none}
 /* 磨砂通用类 */
@@ -31,7 +31,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .page.active{display:block}
 #feedPage{display:none;flex-direction:column;height:100%}
 #feedPage.active{display:flex}
-#bottomNav{display:flex;justify-content:space-around;align-items:center;padding:8px 0;border-top:1px solid var(--border);flex-shrink:0;z-index:1;position:relative;background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+#bottomNav{display:flex;justify-content:space-around;align-items:center;padding:8px 0;border-top:1px solid var(--border);flex-shrink:0;z-index:1;position:relative;background:rgba(255,255,255,0.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .navBtn{background:none;border:none;font-size:13px;color:var(--text2);cursor:pointer;padding:6px 16px;border-radius:16px;transition:all .2s}
 .navBtn.active{color:var(--primary);background:rgba(74,144,217,.15);font-weight:500}
 /* Profile */
@@ -661,15 +661,15 @@ $('settingImport').addEventListener('click',function(){$('fileInputImport').valu
 $('fileInputImport').addEventListener('change',function(){if(this.files&&this.files[0]){const reader=new FileReader();reader.onload=function(e){try{const imported=JSON.parse(e.target.result);if(imported.userName!==undefined){data=imported;saveData();applyBg();document.documentElement.style.setProperty('--text',data.fontColor);$('blurSlider').value=data.blur||0;$('fontColorPicker').value=data.fontColor||'#333333';$('langSelect').value=data.lang||'zh-CN';langData=LANG[data.lang]||LANG['zh-CN'];applyLang();renderProfile();renderFeed();showToast(t('toast_imported'))}else showToast('文件格式错误')}catch(err){showToast('文件读取失败')}};reader.readAsText(this.files[0])}});
 $('settingPush').addEventListener('click',async function(){
   if(!data.pushEnabled){
-    if(!('Notification'in window)){showToast('此浏览器不支持推送通知');return}
+    if(!('Notification'in window)||!('serviceWorker'in navigator)){showToast('此浏览器不支持推送');return}
     const perm=await Notification.requestPermission()
     if(perm!=='granted'){showToast('请允许通知权限');return}
     try{
-      const reg=await navigator.serviceWorker.register('sw.js')
+      const reg=await navigator.serviceWorker.register('sw.js',{scope:'/'})
       await navigator.serviceWorker.ready
       const sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array('BMzik6m7nFxbogkxYQ6M3-logfhmiADJrfHsYr2bDWZcVqlWq7Z3tdYhGCdSu2nMVA_Uy8elZcPeyN-S9hmMWs')})
       data.subscription=JSON.stringify(sub);data.pushEnabled=true;$('pushStatus').textContent=t('pushOn');saveData();showToast(t('toast_pushed'))
-    }catch(err){showToast('推送订阅失败: '+err.message)}
+    }catch(err){showToast('推送订阅失败');console.error(err)}
   }else{
     data.pushEnabled=false;data.subscription=null;$('pushStatus').textContent=t('pushOff');saveData();showToast(t('toast_pushDisabled'))
     try{const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(sub)await sub.unsubscribe()}catch(_){}
