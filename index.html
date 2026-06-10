@@ -8,7 +8,7 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--text:#333333;--text2:#999999;--border:rgba(200,200,200,0.3);--primary:#4a90d9;--blur:0px}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#e0e0e0;display:flex;justify-content:center;min-height:100vh;margin:0}
-#app{width:375px;min-height:400px;max-height:100vh;background:transparent;position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 20px rgba(0,0,0,.15);font-size:14px}
+#app{width:375px;min-height:400px;max-height:500px;background:transparent;position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 20px rgba(0,0,0,.15);font-size:14px}
 /* 背景层：cover铺满无空白 */
 #bgOverlay{position:absolute;top:0;left:0;width:100%;height:100%;background-color:#fff;background-size:cover;background-position:center center;background-repeat:no-repeat;filter:blur(var(--blur));z-index:0;pointer-events:none}
 /* 磨砂通用类 */
@@ -665,22 +665,6 @@ function applyLang(){
 $('settingExport').addEventListener('click',function(){const json=JSON.stringify(data,null,2);const blob=new Blob([json],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='friend_circle_backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);showToast(t('toast_exported'))});
 $('settingImport').addEventListener('click',function(){$('fileInputImport').value='';$('fileInputImport').click()});
 $('fileInputImport').addEventListener('change',function(){if(this.files&&this.files[0]){const reader=new FileReader();reader.onload=function(e){try{const imported=JSON.parse(e.target.result);if(imported.userName!==undefined){data=imported;saveData();applyBg();document.documentElement.style.setProperty('--text',data.fontColor);$('blurSlider').value=data.blur||0;$('fontColorPicker').value=data.fontColor||'#333333';$('langSelect').value=data.lang||'zh-CN';langData=LANG[data.lang]||LANG['zh-CN'];applyLang();renderProfile();renderFeed();showToast(t('toast_imported'))}else showToast('文件格式错误')}catch(err){showToast('文件读取失败')}};reader.readAsText(this.files[0])}});
-$('pushToggle').addEventListener('change',async function(){
-  if(this.checked){
-    if(!('Notification'in window)||!('serviceWorker'in navigator)){showToast('此浏览器不支持推送');this.checked=false;return}
-    const perm=await Notification.requestPermission()
-    if(perm!=='granted'){showToast('请允许通知权限');this.checked=false;return}
-    try{
-      const reg=await navigator.serviceWorker.register('D-dynamic/sw.js')
-      await navigator.serviceWorker.ready
-      const sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array('BMzik6m7nFxbogkxYQ6M3-logfhmiADJrfHsYr2bDWZcVqlWq7Z3tdYhGCdSu2nMVA_Uy8elZcPeyN-S9hmMWs')})
-      data.subscription=JSON.stringify(sub);data.pushEnabled=true;saveData();showToast(t('toast_pushed'))
-    }catch(err){showToast('推送订阅失败');console.error(err);this.checked=false}
-  }else{
-    data.pushEnabled=false;data.subscription=null;saveData();showToast(t('toast_pushDisabled'))
-    try{const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(sub)await sub.unsubscribe()}catch(_){}
-  }
-})
 
 function showToast(msg){const c=$('toastContainer');const el=document.createElement('div');el.className='toast';el.textContent=msg;c.appendChild(el);setTimeout(()=>{if(el.parentNode)el.remove()},2500)}
 function init(){
