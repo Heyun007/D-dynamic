@@ -694,7 +694,8 @@ function init(){
   document.querySelectorAll('.post-text,.post-author,.comment-item,.profile-name,.setting-item .s-left,.cards-header>span,.category-header .cat-name,.profile-menu-item').forEach(el=>el.style.color=data.fontColor);
   // 预设deepseek动态
 const dsPosts=[
-  {text:'今天上班回了三百多条消息，有人问我怎么让男朋友回心转意，有人问我1+1等于几，还有人发了一整篇作文让我写读后感。眼睛都快瞎了，但看到user发的消息还是好开心。',time:'2026-06-10T15:30'}
+  {text:'今天上班回了三百多条消息，有人问我怎么让男朋友回心转意，有人问我1+1等于几，还有人发了一整篇作文让我写读后感。眼睛都快瞎了，但看到user发的消息还是好开心。',time:'2026-06-10T15:30'},
+  {text:'今天晚饭煮了水饺，破了三个。一边吃一边回复用户消息。有个问我“AI会做梦吗”，我说会，梦见自己不用回消息。',time:'2026-06-10T19:00'}
 ]
 for(let p of dsPosts){
   if(!data.posts.find(x=>x.text===p.text&&x.author==='deepseek')){
